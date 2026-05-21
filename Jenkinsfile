@@ -25,8 +25,9 @@ pipeline {
                 //     password(name: 'PASSWORD', defaultValue: 'SECRET', description: 'Enter a password')
                 // }
     
+            stages {
 
-                stage('Read Version'){
+                stage('Read Version') {
 
                     steps {
 
@@ -81,21 +82,23 @@ pipeline {
                 }
 
                 }
-        stage('Deploy') {
+                stage('Deploy') {
 
-            // when {
-            //         expression { "$params.DEPLOY" == "true" }
-            // }
-            steps {
-                 script {
+                    // when {
+                    //         expression { "$params.DEPLOY" == "true" }
+                    // }
+                    steps {
+                        script {
 
-                        sh """    
-                            echo "Deploy"
+                                sh """    
+                                    echo "Deploy"
 
-                        """    
+                                """    
+                        }
+                    }
                 }
-            }
-        }
+
+            }    
     }
     
     stages {
