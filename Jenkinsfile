@@ -67,7 +67,7 @@ pipeline {
                 script {
 
                         sh """    
-                            docker build -t catalogue:${appversion}
+                            docker build -t catalogue:${appversion} .
 
                         """    
                 }
@@ -75,9 +75,9 @@ pipeline {
         }
         stage('Deploy') {
 
-            when {
-                    expression { "$params.DEPLOY" == "true" }
-            }
+            // when {
+            //         expression { "$params.DEPLOY" == "true" }
+            // }
             steps {
                  script {
 
