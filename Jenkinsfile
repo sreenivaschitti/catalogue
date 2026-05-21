@@ -82,39 +82,8 @@ pipeline {
                 }
 
                 }
-                stage('Deploy') {
-
-                    // when {
-                    //         expression { "$params.DEPLOY" == "true" }
-                    // }
-                    steps {
-                        script {
-
-                                sh """    
-                                    echo "Deploy"
-
-                                """    
-                        }
-                    }
-                }
-
+              
             }    
     }
     
-    stages {
-
-     post { 
-        always { 
-            echo 'I will always say Hello again!'
-        }
-        success {
-
-            echo 'sucess'
-        }
-
-        failure {
-
-            echo 'failure'
-        }
-    }
-}
+    
