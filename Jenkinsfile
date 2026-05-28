@@ -66,18 +66,17 @@ pipeline {
                 }
 
 
-                // stage('SonarQube Analysis') {
-                //     tools {
+                stage('SonarQube Analysis') {
+            steps {
+                script {
+                    def scannerHome = tool name: 'sonar-8'
 
-                //         sonar 'sonar-8'
-                //     }
-                //     steps {
-                //         script {
-
-                //                 sh "sonar-scanner"
-                //             }
-                //         }
-                //     }
+                    withSonarQubeEnv('sonar-server') {
+                        sh "${scannerHome}/bin/sonar-scanner"
+                    }
+                }
+            }
+        }
         
                 stage('dockerbuild') {
                     steps {
