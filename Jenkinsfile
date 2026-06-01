@@ -66,26 +66,58 @@ pipeline {
                 }
 
 
-                stage('SonarQube Analysis') {
-            steps {
-                script {
-                    def scannerHome = tool name: 'sonar-8'
+        //         stage('SonarQube Analysis') {
+        //     steps {
+        //         script {
+        //             def scannerHome = tool name: 'sonar-8'
 
-                    withSonarQubeEnv('sonar-server') {
-                        sh "${scannerHome}/bin/sonar-scanner"
+        //             withSonarQubeEnv('sonar-server') {
+        //                 sh "${scannerHome}/bin/sonar-scanner"
+        //             }
+        //         }
+        //     }
+        // }
+
+        // stage('Quality Gate') {
+        //     steps {
+        //         timeout(time: 1, unit: 'HOURS') {
+        //             waitForQualityGate abortPipeline: true
+        //         }
+        //     }
+        // }
+         stage('Dependabot Security Check') {
+            steps {
+                withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN')]) {
+                    script {
+                        def owner = 'sreenivaschitti'
+                        def repo  = 'catalogue'
+
+                        def response = sh(
+                            script: """
+                                curl -s -w "\\n%{http_code}" \
+                                -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+                                "https://api.github.com/repos/${owner}/${repo}/dependabot/alerts?severity=high,critical&state=open"
+                            """,
+                            returnStdout: true
+                        ).trim()
+
+                        def parts      = response.tokenize('\\n')
+                        def httpStatus = parts[-1]
+                        def body       = parts[0..-2].join('\\n')
+
+                        if (httpStatus != '200') {
+                            error "GitHub API failed: ${httpStatus}"
+                        }
+
+                        def alerts = readJSON text: body
+
+                        if (alerts.size() > 0) {
+                            error "High/Critical vulnerabilities found!"
+                        }
                     }
                 }
             }
         }
-
-        stage('Quality Gate') {
-            steps {
-                timeout(time: 1, unit: 'HOURS') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
-        
                 stage('dockerbuild') {
                     steps {
                         script {
