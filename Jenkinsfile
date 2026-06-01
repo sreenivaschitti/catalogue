@@ -101,9 +101,9 @@ pipeline {
                             returnStdout: true
                         ).trim()
 
-                        def parts      = response.tokenize('\\n')
+                        def parts      = response.tokenize('\n')
                         def httpStatus = parts[-1]
-                        def body       = parts[0..-2].join('\\n')
+                        def body       = parts[0..-2].join('\n')
 
                         if (httpStatus != '200') {
                             error "GitHub API failed: ${httpStatus}"
