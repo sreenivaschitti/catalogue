@@ -94,8 +94,8 @@ pipeline {
 
                         def response = sh(
                             script: """
-                                curl -s -w "\\n%{http_code}" \
-                                -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+                                curl -s -w "\\n%{http_code}" \\
+                                -H "Authorization: Bearer ${GITHUB_TOKEN}" \\
                                 "https://api.github.com/repos/${owner}/${repo}/dependabot/alerts?severity=high,critical&state=open"
                             """,
                             returnStdout: true
